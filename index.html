@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Corina Uberto-Gibert | Solution Engineer, Customer Success Manager, Technical Account Manager - SaaS Expert">
+    <title>Corina Uberto-Gibert | SaaS Solution Engineer & CSM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-light: #a29bfe;
+            --primary-dark: #5849c2;
+            --secondary: #fd79a8;
+            --secondary-light: #fab1d5;
+            --accent: #00cec9;
+            --light: #fdf6f8;
+            --dark: #2d3436;
+            --gray: #dfe6e9;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --gradient-1: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --gradient-2: linear-gradient(135deg, var(--accent) 0%, var(--primary-light) 100%);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--light);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--gray); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--gradient-1); 
+            border-radius: 5px; 
+        }
+        .loading {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--gradient-1);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s, visibility 0.5s;
+        }
+        .loading.hidden { opacity: 0; visibility: hidden; }
+        .loader {
+            width: 60px; height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 50px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .header.scrolled { padding: 10px 50px; background: rgba(255,255,255,0.98); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .logo { 
+            font-family: 'Pacifico', cursive; font-size: 1.8em; font-weight: 700;
+            background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-menu { display: flex; list-style: none; gap: 30px; }
+        .nav-menu a {
+            text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.95em;
+            position: relative; padding: 5px 0; transition: var(--transition);
+        }
+        .nav-menu a:after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+            background: var(--gradient-1); transition: var(--transition);
+        }
+        .nav-menu a:hover { color: var(--primary); }
+        .nav-menu a:hover:after { width: 100%; }
+        .nav-menu a.active { color: var(--primary); }
+        .nav-menu a.active:after { width: 100%; }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+        .hamburger span { width: 25px; height: 2px; background: var(--primary); transition: var(--transition); }
+        .hero {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, var(--secondary) 100%);
+            padding: 100px 50px 50px;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: 20px 20px; animation: bgMove 20s infinite linear;
+        }
+        @keyframes bgMove { 0% { background-position: 0 0; } 100% { background-position: 20px 20px; } }
+        .hero-container { max-width: 1400px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 2; }
+        .hero-content { color: white; }
+        .hero-content .greeting { font-size: 1.2em; font-weight: 400; margin-bottom: 15px; opacity: 0.9; }
+        .hero-content .name { font-family: 'Playfair Display', serif; font-size: 3.5em; font-weight: 700; margin-bottom: 20px; line-height: 1.2; animation: fadeInUp 1s ease-out; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-content .title { font-size: 1.5em; font-weight: 500; margin-bottom: 25px; opacity: 0.95; animation: fadeInUp 1s ease-out 0.2s both; }
+        .typing-container { font-size: 1.3em; font-weight: 600; margin-bottom: 30px; height: 30px; animation: fadeInUp 1s ease-out 0.4s both; }
+        .typing-text { color: var(--accent); border-right: 2px solid var(--accent); animation: blink 0.7s infinite; }
+        @keyframes blink { 0%, 100% { border-color: var(--accent); } 50% { border-color: transparent; } }
+        .hero-content .description { font-size: 1.1em; line-height: 1.8; margin-bottom: 40px; opacity: 0.9; animation: fadeInUp 1s ease-out 0.6s both; }
+        .hero-content .description strong { color: white; }
+        .hero-content .cta { display: inline-flex; align-items: center; gap: 15px; animation: fadeInUp 1s ease-out 0.8s both; }
+        .btn {
+            display: inline-block; padding: 15px 30px; background: white; color: var(--primary);
+            text-decoration: none; font-weight: 600; border-radius: 50px;
+            transition: var(--transition); box-shadow: var(--shadow); border: none; cursor: pointer;
+        }
+        .btn-primary { background: var(--gradient-1); color: white; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .btn-outline { background: transparent; border: 2px solid white; color: white; }
+        .btn-outline:hover { background: white; color: var(--primary); transform: translateY(-3px); }
+        .hero-image { position: relative; display: flex; justify-content: center; align-items: center; animation: fadeInUp 1s ease-out 1s both; }
+        .photo-frame {
+            width: 400px; height: 400px; border-radius: 20px; overflow: hidden;
+            box-shadow: var(--shadow); position: relative; transform: rotate(3deg); transition: var(--transition);
+        }
+        .photo-frame:hover { transform: rotate(0deg) scale(1.02); }
+        .photo-frame::before {
+            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+            background: var(--gradient-1); border-radius: 25px; z-index: -1; opacity: 0.3;
+        }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-decoration {
+            position: absolute; width: 60px; height: 60px; background: var(--accent);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.5em; box-shadow: var(--shadow);
+        }
+        .photo-decoration-1 { top: 20px; right: 20px; }
+        .photo-decoration-2 { bottom: 20px; left: 20px; }
+        .social-links {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 20px;
+        }
+        .social-links a {
+            width: 50px; height: 50px; background: rgba(255,255,255,0.2);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; text-decoration: none; font-size: 1.2em; transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+        .social-links a:hover { background: white; color: var(--primary); transform: translateY(-5px); }
+        .section { padding: 100px 50px; position: relative; overflow: hidden; }
+        .section-title { text-align: center; margin-bottom: 60px; position: relative; }
+        .section-title h2 {
+            font-family: 'Playfair Display', serif; font-size: 2.8em; font-weight: 700;
+            background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 15px;
+        }
+        .section-title::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 4px; background: var(--gradient-1); border-radius: 2px;
+        }
+        .section-subtitle { text-align: center; font-size: 1.2em; color: var(--text-light); margin-bottom: 50px; }
+        .container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+        .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .about-text { font-size: 1.1em; line-height: 1.9; }
+        .about-text p { margin-bottom: 20px; }
+        .about-text strong { color: var(--primary); }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+        .stat-item {
+            text-align: center; padding: 30px 20px; background: white; border-radius: 20px;
+            box-shadow: var(--shadow); transition: var(--transition);
+        }
+        .stat-item:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); }
+        .stat-number {
+            font-family: 'Playfair Display', serif; font-size: 2.5em; font-weight: 700;
+            background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 10px;
+        }
+        .stat-label { font-size: 0.95em; color: var(--text-light); font-weight: 500; }
+        .role-tags { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; margin-top: 40px; }
+        .role-tag {
+            background: rgba(255,255,255,0.9); padding: 12px 25px; border-radius: 50px;
+            color: var(--primary); font-weight: 600; border: 2px solid var(--primary-light);
+            transition: var(--transition); cursor: pointer;
+        }
+        .role-tag:hover { background: var(--gradient-1); color: white; transform: translateY(-3px); box-shadow: var(--shadow); }
+        .skills-section { background: linear-gradient(180deg, var(--light) 0%, white 100%); }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .skill-category {
+            background: white; padding: 30px; border-radius: 20px; box-shadow: var(--shadow);
+            transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .skill-category::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--gradient-1); }
+        .skill-category:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); }
+        .skill-category-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .skill-category-header i { font-size: 1.5em; color: var(--primary); }
+        .skill-category-header h3 { font-size: 1.3em; font-weight: 600; color: var(--dark); }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill-tag {
+            background: var(--gray); padding: 10px 15px; border-radius: 25px; font-size: 0.9em;
+            font-weight: 500; color: var(--text); transition: var(--transition); cursor: pointer;
+        }
+        .skill-tag:hover { background: var(--gradient-1); color: white; transform: scale(1.05); }
+        .experience-section { background: white; }
+        .timeline { position: relative; padding-left: 50px; }
+        .timeline::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--gradient-1); }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -50px; top: 5px; width: 20px; height: 20px;
+            background: var(--gradient-1); border-radius: 50%; box-shadow: 0 0 0 5px white;
+        }
+        .timeline-item:hover .timeline-item::before { background: var(--secondary); box-shadow: 0 0 0 5px white, 0 0 15px rgba(253,121,168,0.3); }
+        .timeline-content {
+            background: white; padding: 30px; border-radius: 20px; box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .timeline-content:hover { transform: translateX(10px); box-shadow: var(--shadow-hover); }
+        .timeline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .timeline-header .job-title { font-size: 1.4em; font-weight: 600; color: var(--primary); }
+        .timeline-header .company { font-size: 1.2em; font-weight: 500; color: var(--secondary); }
+        .timeline-header .date { font-size: 0.95em; color: var(--text-light); }
+        .timeline-description { line-height: 1.8; }
+        .timeline-description ul { list-style: none; padding-left: 0; }
+        .timeline-description li { margin-bottom: 10px; position: relative; padding-left: 20px; }
+        .timeline-description li::before {
+            content: '\f0da'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+            position: absolute; left: 0; color: var(--primary);
+        }
+        .education-section { background: linear-gradient(180deg, white 0%, var(--light) 100%); }
+        .education-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .education-item {
+            background: white; padding: 30px; border-radius: 20px; box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .education-item:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); }
+        .education-item .degree { font-size: 1.3em; font-weight: 600; color: var(--primary); margin-bottom: 10px; }
+        .education-item .institution { font-size: 1.1em; font-weight: 500; color: var(--secondary); margin-bottom: 10px; }
+        .education-item .period { font-size: 0.95em; color: var(--text-light); margin-bottom: 15px; }
+        .contact-section { 
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+            color: white; text-align: center;
+        }
+        .contact-section .section-title h2, .contact-section .section-subtitle { color: white; }
+        .contact-section .section-title::after { background: white; }
+        .contact-form { max-width: 600px; margin: 0 auto; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { position: relative; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 15px 20px; background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2); border-radius: 15px; color: white;
+            font-size: 1em; transition: var(--transition); backdrop-filter: blur(5px);
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: white; background: rgba(255,255,255,0.2); }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.7); }
+        .form-group textarea { min-height: 150px; resize: vertical; }
+        .form-group label {
+            position: absolute; top: 15px; left: 20px; color: rgba(255,255,255,0.7);
+            font-size: 0.9em; pointer-events: none; transition: var(--transition);
+        }
+        .form-group input:focus + label, .form-group textarea:focus + label {
+            top: -10px; left: 10px; font-size: 0.8em; background: var(--primary); padding: 0 5px; color: white;
+        }
+        .footer {
+            background: var(--dark); color: white; text-align: center; padding: 30px 50px;
+        }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .footer-links { display: flex; gap: 30px; }
+        .footer-links a { color: var(--accent); text-decoration: none; transition: var(--transition); }
+        .footer-links a:hover { color: var(--primary-light); }
+        .footer-social { display: flex; gap: 15px; }
+        .footer-social a {
+            width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white;
+            text-decoration: none; font-size: 1.1em; transition: var(--transition);
+        }
+        .footer-social a:hover { background: var(--primary); transform: translateY(-3px); }
+        .copyright { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.9em; color: rgba(255,255,255,0.7); }
+        .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+        @media (max-width: 1024px) {
+            .hero-container { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+            .hero-content { order: 2; }
+            .hero-image { order: 1; }
+            .photo-frame { width: 300px; height: 300px; }
+            .about-content { grid-template-columns: 1fr; gap: 40px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 768px) {
+            .header { padding: 15px 25px; }
+            .nav-menu { display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; flex-direction: column; padding: 20px; box-shadow: var(--shadow); gap: 15px; }
+            .nav-menu.active { display: flex; }
+            .hamburger { display: flex; }
+            .hero { padding: 100px 25px 50px; }
+            .hero-content .name { font-size: 2.5em; }
+            .section { padding: 60px 25px; }
+            .section-title h2 { font-size: 2em; }
+            .photo-frame { width: 250px; height: 250px; }
+            .social-links { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .social-links a { width: 45px; height: 45px; font-size: 1em; }
+            .role-tags { gap: 10px; }
+            .role-tag { padding: 10px 15px; font-size: 0.9em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading"><div class="loader"></div></div>
+    <header class="header" id="header">
+        <div class="nav-container">
+            <div class="logo">Cori</div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#hero" class="active">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#education">Education</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+        </div>
+    </header>
+    <section class="hero" id="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="greeting">Hello, I'm</div>
+                <h1 class="name">Corina Uberto-Gibert</h1>
+                <div class="title">Solution Engineer | Customer Success Manager | Technical Account Manager</div>
+                <div class="typing-container"><span class="typing-text" id="typingText"></span></div>
+                <p class="description">
+                    Cosmopolitan <strong>Solution Engineer</strong> with a passion for bridging technology and business needs. 
+                    <strong>5+ years</strong> in B2B SaaS, specializing in cybersecurity, data, and AI automation. 
+                    Fluent in <strong>EN/FR/ES/IT</strong> with a track record of success with enterprise clients.
+                </p>
+                <div class="cta">
+                    <a href="#contact" class="btn btn-primary">Get in Touch</a>
+                    <a href="#experience" class="btn btn-outline">View Experience</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="photo-frame">
+                    <img src="corina_foto.png" alt="Corina Uberto-Gibert" onerror="this.src='https://via.placeholder.com/400x400/6c5ce7/ffffff?text=Photo'">
+                    <div class="photo-decoration photo-decoration-1"><i class="fas fa-code"></i></div>
+                    <div class="photo-decoration photo-decoration-2"><i class="fas fa-heart"></i></div>
+                </div>
+                <div class="social-links">
+                    <a href="mailto:corina.uberto.gibert@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+                    <a href="https://linkedin.com/in/corina-gibert-uberto" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="tel:+33653435300" title="Phone"><i class="fas fa-phone"></i></a>
+                    <a href="https://github.com/CoriAriasGibert" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section" style="background: white; padding: 40px 50px;">
+        <div class="container">
+            <div class="role-tags animate-on-scroll">
+                <span class="role-tag">Solution Engineer</span>
+                <span class="role-tag">Customer Success</span>
+                <span class="role-tag">Technical Account Manager</span>
+                <span class="role-tag">Pre-Sales Engineer</span>
+                <span class="role-tag">Cybersecurity</span>
+                <span class="role-tag">SaaS Expert</span>
+            </div>
+        </div>
+    </section>
+    <section class="section about-section" id="about">
+        <div class="section-title animate-on-scroll"><h2>About Me</h2></div>
+        <div class="section-subtitle animate-on-scroll">Passionate about technology, customer success, and bridging the gap between business needs and technical solutions</div>
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text animate-on-scroll">
+                    <p>I'm a <strong>polyglot Solution Engineer</strong> with a unique background that combines <strong>technical expertise</strong> with <strong>customer-facing excellence</strong>. My journey has taken me through teaching, backend development, technical support, and now solution engineering in the cybersecurity and SaaS space.</p>
+                    <p>What drives me is the <strong>challenge of solving complex problems</strong> and the satisfaction of seeing how technology can transform businesses. I thrive in <strong>early-stage, autonomous environments</strong> where I can own end-to-end processes from pre-sales to client success.</p>
+                    <p>With <strong>5+ years of experience</strong> in B2B SaaS, I've worked with major enterprises like Renault, Stellantis, Coca-Cola, Carrefour, and AkzoNobel, delivering technical solutions that drive real business value.</p>
+                </div>
+                <div class="animate-on-scroll">
+                    <div class="stats-grid">
+                        <div class="stat-item"><div class="stat-number">5+</div><div class="stat-label">Years Experience</div></div>
+                        <div class="stat-item"><div class="stat-number">15+</div><div class="stat-label">Enterprise Clients</div></div>
+                        <div class="stat-item"><div class="stat-number">4</div><div class="stat-label">Languages</div></div>
+                        <div class="stat-item"><div class="stat-number">5</div><div class="stat-label">Countries Lived</div></div>
+                        <div class="stat-item"><div class="stat-number">100%</div><div class="stat-label">Customer Focus</div></div>
+                        <div class="stat-item"><div class="stat-number">24/7</div><div class="stat-label">Problem Solver</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section skills-section" id="skills">
+        <div class="section-title animate-on-scroll"><h2>My Skills</h2></div>
+        <div class="section-subtitle animate-on-scroll">Technical expertise combined with exceptional customer-facing skills</div>
+        <div class="container">
+            <div class="skills-grid">
+                <div class="skill-category animate-on-scroll">
+                    <div class="skill-category-header"><i class="fas fa-laptop-code"></i><h3>Technical Skills</h3></div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span><span class="skill-tag">SQL</span><span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">Elasticsearch</span><span class="skill-tag">Snowflake</span><span class="skill-tag">Git</span>
+                        <span class="skill-tag">REST APIs</span><span class="skill-tag">JSON</span><span class="skill-tag">Webhooks</span>
+                    </div>
+                </div>
+                <div class="skill-category animate-on-scroll">
+                    <div class="skill-category-header"><i class="fas fa-cogs"></i><h3>Solution Engineering</h3></div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Technical Discovery</span><span class="skill-tag">Solution Architecture</span>
+                        <span class="skill-tag">POC Development</span><span class="skill-tag">Demo Creation</span>
+                        <span class="skill-tag">Technical Presentations</span><span class="skill-tag">Customer Workshops</span>
+                    </div>
+                </div>
+                <div class="skill-category animate-on-scroll">
+                    <div class="skill-category-header"><i class="fas fa-users"></i><h3>Customer Success</h3></div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Client Onboarding</span><span class="skill-tag">Account Management</span>
+                        <span class="skill-tag">Retention Strategies</span><span class="skill-tag">Customer Training</span>
+                        <span class="skill-tag">Relationship Building</span><span class="skill-tag">Value Demonstration</span>
+                    </div>
+                </div>
+                <div class="skill-category animate-on-scroll">
+                    <div class="skill-category-header"><i class="fas fa-shield-alt"></i><h3>Cybersecurity</h3></div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">SecOps/SOC</span><span class="skill-tag">SIEM/SOAR</span>
+                        <span class="skill-tag">EDR/XDR</span><span class="skill-tag">IAM</span>
+                        <span class="skill-tag">Cloud Security</span><span class="skill-tag">Incident Response</span>
+                    </div>
+                </div>
+                <div class="skill-category animate-on-scroll">
+                    <div class="skill-category-header"><i class="fas fa-robot"></i><h3>AI & Automation</h3></div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">LLM APIs</span><span class="skill-tag">Agentic AI</span>
+                        <span class="skill-tag">AI Workflows</span><span class="skill-tag">Prompt Engineering</span>
+                        <span class="skill-tag">Automation Platforms</span>
+                    </div>
+                </div>
+                <div class="skill-category animate-on-scroll">
+                    <div class="skill-category-header"><i class="fas fa-brain"></i><h3>Soft Skills</h3></div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Problem Solving</span><span class="skill-tag">Communication</span>
+                        <span class="skill-tag">Autonomous</span><span class="skill-tag">Goal-Oriented</span>
+                        <span class="skill-tag">Collaborative</span><span class="skill-tag">Multilingual</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section experience-section" id="experience">
+        <div class="section-title animate-on-scroll"><h2>Professional Experience</h2></div>
+        <div class="section-subtitle animate-on-scroll">Building bridges between technology and business success</div>
+        <div class="container">
+            <div class="timeline animate-on-scroll">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <div><div class="job-title">Solution Engineer</div><div class="company">HARVEN - Cybersecurity SaaS B2B</div></div>
+                            <div class="date">Apr 2026 - Present | Paris, Hybrid</div>
+                        </div>
+                        <div class="timeline-description">
+                            <ul>
+                                <li><strong>Full Technical Ownership:</strong> First and only Solution Engineer in a team of 4; complete ownership of pre- and post-sales technical execution, including POCs, demos, and client onboarding</li>
+                                <li><strong>Security-Focused Solutions:</strong> Designed and implemented integration patterns for cybersecurity clients, with emphasis on secure data workflows and API-based automations</li>
+                                <li><strong>Technical Documentation:</strong> Sole author of complete Help Center with integration guides, API documentation, security best practices, and implementation playbooks</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <div><div class="job-title">Solution Engineer</div><div class="company">Shippeo - Supply Chain Visibility</div></div>
+                            <div class="date">Nov 2023 - Apr 2026 | Paris, Full Remote</div>
+                        </div>
+                        <div class="timeline-description">
+                            <ul>
+                                <li><strong>Enterprise Integrations:</strong> Managed technical integrations and data workflows for global enterprise accounts (Renault, Stellantis, Coca-Cola, AkzoNobel, Carrefour) in 4 languages</li>
+                                <li><strong>API & Data Architecture:</strong> Implemented REST APIs, webhooks, JSON mapping, and database query logic for real-time data ingestion and security monitoring</li>
+                                <li><strong>Automated Workflows:</strong> Configured API-based workflows, data transformations, and automated data flows with focus on security and compliance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <div><div class="job-title">Technical Support Engineer</div><div class="company">Weglot - SaaS Localization</div></div>
+                            <div class="date">Apr 2022 - Jul 2023 | Paris, Hybrid</div>
+                        </div>
+                        <div class="timeline-description">
+                            <ul>
+                                <li><strong>Multilingual Support:</strong> Provided tier-2/3 technical support (EN/FR/ES), guided onboarding processes, and authored comprehensive technical documentation</li>
+                                <li><strong>Integration Support:</strong> Assisted customers with workflow integrations, API troubleshooting, and security configuration</li>
+                                <li><strong>Customer Retention:</strong> Boosted customer self-serve resolution through detailed documentation and best practice guides</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-header">
+                            <div><div class="job-title">Backend Developer (Python)</div><div class="company">Data Theorem - Mobile & API Security</div></div>
+                            <div class="date">Oct 2021 - Feb 2022 | Paris, Full Remote</div>
+                        </div>
+                        <div class="timeline-description">
+                            <ul>
+                                <li><strong>Security-Focused Development:</strong> Engineered backend API microservices using Python (Flask, Falcon, SQLAlchemy, Mypy) in Agile/Scrum environment</li>
+                                <li><strong>API & Cloud Security:</strong> Developed solutions for cloud and application security with focus on data protection, authentication, and scalability</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section education-section" id="education">
+        <div class="section-title animate-on-scroll"><h2>Education</h2></div>
+        <div class="section-subtitle animate-on-scroll">Lifelong learner with a diverse academic background</div>
+        <div class="container">
+            <div class="education-grid">
+                <div class="education-item animate-on-scroll">
+                    <div class="degree">Web Development & Data Visualization</div>
+                    <div class="institution">Fonderie de l'Image Campus, Paris</div>
+                    <div class="period">2019 - 2020</div>
+                    <p style="margin-top: 15px; color: var(--text-light);">PHP, Python, SQL, Data Visualization, Database Design</p>
+                </div>
+                <div class="education-item animate-on-scroll">
+                    <div class="degree">Languages & Literature (PhD Level)</div>
+                    <div class="institution">Complutense University of Madrid</div>
+                    <div class="period">2017 - 2019</div>
+                    <p style="margin-top: 15px; color: var(--text-light);">Research in Latin American literature with data analysis focus</p>
+                </div>
+                <div class="education-item animate-on-scroll">
+                    <div class="degree">Languages & Social Sciences (Master's Degree)</div>
+                    <div class="institution">National University of Córdoba</div>
+                    <div class="period">2009 - 2016</div>
+                    <p style="margin-top: 15px; color: var(--text-light);">Bachelor's degree + Teaching Assistant, Faculty of Philosophy</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section contact-section" id="contact">
+        <div class="section-title animate-on-scroll"><h2>Get in Touch</h2></div>
+        <div class="section-subtitle animate-on-scroll">Let's build something amazing together</div>
+        <div class="container">
+            <div class="contact-form animate-on-scroll">
+                <div class="form-grid">
+                    <div class="form-group"><input type="text" id="name" required><label for="name">Name</label></div>
+                    <div class="form-group"><input type="email" id="email" required><label for="email">Email</label></div>
+                </div>
+                <div class="form-group"><input type="text" id="subject" required><label for="subject">Subject</label></div>
+                <div class="form-group"><textarea id="message" required></textarea><label for="message">Message</label></div>
+                <button type="button" class="btn btn-primary" onclick="sendMessage()">Send Message</button>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="logo">Cori</div>
+            <div class="footer-links">
+                <a href="#hero">Home</a><a href="#about">About</a><a href="#skills">Skills</a>
+                <a href="#experience">Experience</a><a href="#contact">Contact</a>
+            </div>
+            <div class="footer-social">
+                <a href="mailto:corina.uberto.gibert@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://linkedin.com/in/corina-gibert-uberto" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="tel:+33653435300" title="Phone"><i class="fas fa-phone"></i></a>
+                <a href="https://github.com/CoriAriasGibert" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            </div>
+        </div>
+        <div class="copyright">&copy; 2025 Corina Uberto-Gibert. All rights reserved.</div>
+    </footer>
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(() => { document.getElementById('loading').classList.add('hidden'); }, 2000);
+        });
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) header.classList.add('scrolled'); else header.classList.remove('scrolled');
+        });
+        const hamburger = document.getElementById('hamburger'), navMenu = document.getElementById('navMenu');
+        hamburger.addEventListener('click', function() { navMenu.classList.toggle('active'); hamburger.classList.toggle('active'); });
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function() { navMenu.classList.remove('active'); hamburger.classList.remove('active'); });
+        });
+        const typingText = document.getElementById('typingText');
+        const roles = ['Solution Engineer', 'Customer Success Manager', 'Technical Account Manager', 'Pre-Sales Engineer', 'SaaS Expert'];
+        let roleIndex = 0, charIndex = 0, isDeleting = false;
+        function type() {
+            const currentRole = roles[roleIndex];
+            if (isDeleting) { typingText.textContent = currentRole.substring(0, charIndex - 1); charIndex--; }
+            else { typingText.textContent = currentRole.substring(0, charIndex + 1); charIndex++; }
+            let typeSpeed = isDeleting ? 100 : 150;
+            if (!isDeleting && charIndex === currentRole.length) { typeSpeed = 2000; isDeleting = true; }
+            else if (isDeleting && charIndex === 0) { isDeleting = false; roleIndex = (roleIndex + 1) % roles.length; typeSpeed = 500; }
+            setTimeout(type, typeSpeed);
+        }
+        setTimeout(type, 1500);
+        const animateOnScroll = document.querySelectorAll('.animate-on-scroll');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        animateOnScroll.forEach(element => { observer.observe(element); });
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault(); const target = document.querySelector(this.getAttribute('href'));
+                if (target) { const headerOffset = 80; const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' }); }
+            });
+        });
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]'), navLinks = document.querySelectorAll('.nav-menu a');
+            let current = ''; sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100; if (window.pageYOffset >= sectionTop) current = section.getAttribute('id');
+            }); navLinks.forEach(link => { link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) link.classList.add('active'); });
+        });
+        function sendMessage() {
+            const name = document.getElementById('name').value, email = document.getElementById('email').value,
+            subject = document.getElementById('subject').value, message = document.getElementById('message').value;
+            if (name && email && subject && message) { alert('Thank you for your message! I will get back to you soon.');
+                document.getElementById('name').value = ''; document.getElementById('email').value = '';
+                document.getElementById('subject').value = ''; document.getElementById('message').value = '';
+            } else { alert('Please fill in all fields.'); }
+        }
+    </script>
+</body>
+</html>
